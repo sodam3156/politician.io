@@ -49,6 +49,7 @@ import {
   minutesUrl,
 } from "./politics-reviewed";
 import "./politicians.css";
+import { IntegrationsPanel, RelatedMedia } from "./DataConnections";
 
 const ENABLE_DEMO = import.meta.env.VITE_ENABLE_DEMO === "true";
 type Tab = "records" | "context" | "analysis" | "scenario";
@@ -1198,7 +1199,12 @@ function Profile({
               <Records person={person} data={data} open={open} />
             )}{" "}
             {active === "context" && (
-              <Contexts person={person} data={data} headlines={headlines} />
+              <>
+                <Contexts person={person} data={data} headlines={headlines} />
+                {person.mode === "official" && (
+                  <RelatedMedia personName={person.name} />
+                )}
+              </>
             )}{" "}
             {active === "analysis" && (
               <Analysis person={person} data={data} open={open} />
@@ -1545,6 +1551,7 @@ function DataPage({
         <h1>자료의 범위와 연결 상태</h1>
         <p>무엇을 확인했는지 만큼, 무엇을 아직 모르는지도 공개합니다.</p>
       </header>
+      <IntegrationsPanel onAssemblyRefresh={reload} />
       <div className="data-status-grid">
         <article>
           <h2>국회 공식 기록</h2>
@@ -1564,7 +1571,8 @@ function DataPage({
           <h2>뉴스 제목</h2>
           <p>
             권한이 확인되지 않은 매체·검색 결과는 자동 수집하지 않습니다. 현재는
-            사용자가 이용권한을 확인해 가져온 자료만 처리합니다.
+            사용자가 이용권한을 확인해 가져온 자료만 분석 흐름에서 처리합니다.
+            연결한 NAVER 검색결과는 원문 검색 영역에서만 별도로 표시합니다.
           </p>
           <External url="https://help.naver.com/service/30015/contents/17128?lang=ko&osType=COMMONOS">
             NAVER API 저장·가공 안내

@@ -8,6 +8,8 @@
   },
   "type": "module",
   "scripts": {
+    "prestart": "npm run build",
+    "start": "node scripts/integrations-server.mjs",
     "test": "vitest run",
     "predev": "node scripts/prepare-data.mjs && node scripts/prepare-fonts.mjs",
     "dev": "vite --host 127.0.0.1 --port 8770 --strictPort",

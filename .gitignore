@@ -23,6 +23,9 @@
 !/src/politics.test.ts
 !/src/styles.css
 !/src/politicians.css
+!/src/DataConnections.tsx
+!/src/integrations.ts
+!/src/integrations.css
 !/scripts/
 /scripts/*
 !/scripts/assembly-client.mjs
@@ -32,6 +35,14 @@
 !/scripts/prepare-data.mjs
 !/scripts/prepare-fonts.mjs
 !/scripts/audit-public.mjs
+!/scripts/provider-client.mjs
+!/scripts/provider-client.test.mjs
+!/scripts/integrations-server.mjs
+!/scripts/integrations-server.test.mjs
+!/scripts/connect-data.ps1
+!/scripts/read-vault.ps1
+!/scripts/vault.mjs
+!/API_SETUP.md
 !/.github/
 /.github/*
 !/.github/workflows/
