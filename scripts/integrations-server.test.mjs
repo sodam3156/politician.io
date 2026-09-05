@@ -45,6 +45,25 @@ async function setup(options = {}) {
   return { root, server, origin, post };
 }
 describe("local-only data connection server", () => {
+  it.each([
+    undefined,
+    { powerShell: "C:\\untrusted.exe" },
+    { powerShell: "pwsh.exe" },
+    { powerShell: "\\\\remote.example\\share\\pwsh.exe" },
+  ])("rejects missing or invalid vault runtime metadata without an environment fallback (%j)", async (runtime) => {
+    const directory = await mkdtemp(join(tmpdir(), "politician-api-test-"));
+    directories.push(directory);
+    await writeFile(join(directory, "ASSEMBLY_API_KEY.dpapi"), "TEST_MARKER_NOT_A_SECRET");
+    if (runtime) await writeFile(join(directory, "runtime.json"), JSON.stringify(runtime));
+    const spawnImpl = vi.fn();
+    await expect(loadSecrets({
+      platform: "win32",
+      env: { POLITICIAN_POWERSHELL: "C:\\untrusted.exe" },
+      vaultDirectory: directory,
+      spawnImpl,
+    })).rejects.toMatchObject({ code: "VAULT_FAILED" });
+    expect(spawnImpl).not.toHaveBeenCalled();
+  });
   it("does not invoke a shell when a Windows user has not registered a vault", async () => {
     const directory = await mkdtemp(join(tmpdir(), "politician-api-test-"));
     directories.push(directory);

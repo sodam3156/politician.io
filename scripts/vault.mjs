@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { readFile, access } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { win32, join } from "node:path";
 import { ProviderError, secretNames } from "./provider-client.mjs";
 export async function loadSecrets({
   env = process.env,
@@ -28,21 +28,24 @@ export async function loadSecrets({
   );
   if (!registered.some(Boolean)) return values;
   const script = fileURLToPath(new URL("./read-vault.ps1", import.meta.url));
-  let shell = env.POLITICIAN_POWERSHELL || "powershell.exe";
+  let shell;
   try {
     const runtime = JSON.parse(
       await readFile(join(vaultDirectory, "runtime.json"), "utf8"),
     );
     if (
       typeof runtime.powerShell !== "string" ||
+      !/^[a-z]:[\\/]/i.test(runtime.powerShell) ||
+      !win32.isAbsolute(runtime.powerShell) ||
       !["pwsh.exe", "powershell.exe"].includes(
-        basename(runtime.powerShell).toLowerCase(),
+        win32.basename(runtime.powerShell).toLowerCase(),
       )
     )
       throw Error();
     shell = runtime.powerShell;
-  } catch (e) {
-    if (e.code !== "ENOENT") throw new ProviderError("VAULT_FAILED");
+  } catch {
+    // No PATH/environment fallback. Re-run registration to repair missing metadata.
+    throw new ProviderError("VAULT_FAILED");
   }
   const saved = await new Promise((resolve, reject) => {
     const child = spawnImpl(
