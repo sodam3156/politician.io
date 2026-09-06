@@ -7,6 +7,8 @@ const content = (
     [
       "src/PoliticianApp.tsx",
       "src/EditorialHome.tsx",
+      "src/policy-briefs.ts",
+      "src/PolicyReading.tsx",
       "src/DataConnections.tsx",
       "src/integrations.ts",
       "src/politics.ts",

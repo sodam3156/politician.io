@@ -1,4 +1,4 @@
-/* Restore the saved editorial composition; data controls live off the front page. */
+/* Editorial reading: ordinary-life changes first, evidence at the next depth. */
 .masthead-wrap { grid-template-columns: 1fr minmax(360px, 2.5fr) 1fr; gap: 16px; }
 .wordmark { font-size: clamp(32px, 4vw, 57px); letter-spacing: -.075em; white-space: nowrap; }
 .wordmark > span { letter-spacing: .12em; font-size: 11px; }
@@ -18,7 +18,43 @@
 .bill-page .article-header { max-width: 800px; margin-bottom: 36px; }
 .bill-page .article-header h1 { margin-block: 15px; }
 .bill-page .related-media { margin-block: 38px; }
+.proposal-status { display: block; width: fit-content; margin-top: 10px; padding: 4px 8px; background: #f2ecdc; color: #674d24; font-size: 12px; font-weight: 600; line-height: 1.6; }
+.editorial-home .lead-grid { grid-template-columns: minmax(0,1.3fr) minmax(0,1.35fr) minmax(0,1fr); }
+.editorial-home .lead-grid.text-only-lead { grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); }
+.editorial-home .text-only-lead .lead-sidebar { grid-column: auto; }
+.editorial-home .lead-copy h3 { line-height: 1.4; margin-top: 12px; text-wrap: pretty; word-break: keep-all; }
+.editorial-home .lead-copy > p, .editorial-home .story-copy > p, .editorial-home .editorial-list p { font-size: 16px; line-height: 1.8; color: #4e574f; }
+.editorial-home .lead-footnote { font-size: 12px; line-height: 1.7; margin-top: 16px; }
+.legal-title { display: block; font-size: 12px; line-height: 1.7; color: #606860; margin-top: 6px; }
+.editorial-home .lead-photo figcaption { font-size: 12px; align-items: flex-start; flex-wrap: wrap; }
+.editorial-home .second-section { display: block; }
+.editorial-home .story-item:not(:has(.story-image-link)) { display: block; }
+.editorial-home .story-copy h3 { font-size: 23px; line-height: 1.5; word-break: keep-all; }
+.editorial-home .story-copy .text-link { min-height: 44px; font-size: 14px; }
+.story-proposer { display: block; font-size: 12px; color: #606860; margin-top: 12px; }
+.editorial-home .editorial-list strong { font-size: 14px; }
+.editorial-home .editorial-list small { font-size: 12px; }
+.editorial-home .lead-copy h3 a:visited, .editorial-home .story-copy h3 a:visited { color: #546448; }
+.policy-reading { border-top: 3px double var(--ink); padding: 28px 0 40px; margin-bottom: 32px; }
+.policy-reading p { font-size: 16px; line-height: 1.9; color: #404a42; word-break: keep-all; overflow-wrap: anywhere; }
+.policy-reading h2 { font-family: var(--serif); font-size: 25px; margin: 32px 0 16px; line-height: 1.5; }
+.policy-reading h3 { font-size: 16px; line-height: 1.6; margin-bottom: 10px; }
+.policy-reading h3 small { font-size: 12px; font-weight: 400; display: block; color: #606860; }
+.policy-audience p { margin-top: 8px; }
+.policy-comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.policy-comparison > div { padding: 22px; background: #f1f2ed; }
+.policy-comparison > div + div { background: #eaf0e7; }
+.policy-caution { border-block: 1px solid var(--rule); padding: 22px 0; margin-top: 24px; }
+.policy-source { margin-top: 16px; }
+.policy-source summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: 14px; font-weight: 600; color: var(--forest); }
+.policy-source p { font-size: 14px; margin: 12px 0; }
+.policy-source .text-link { min-height: 44px; }
+.bill-page .article-header { max-width: none; }
+.bill-page .article-header h1 { font-size: clamp(29px,3vw,43px); line-height: 1.5; max-width: 850px; word-break: keep-all; }
+.bill-page .article-header .policy-deck { font-size: 18px; line-height: 1.85; color: #404a42; }
+.policy-reading summary:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; }
 @media (max-width: 990px) {
+  .editorial-home .lead-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
   .masthead-wrap { grid-template-columns: 1fr auto; }
   .wordmark { grid-column: 1 / -1; grid-row: 1; font-size: clamp(30px, 5vw, 48px); }
   .masthead-tagline { grid-column: 1; grid-row: 2; }
@@ -31,6 +67,27 @@
   .compact-header .masthead-actions { grid-column: 2; grid-row: 1; }
 }
 @media (max-width: 640px) {
+  .editorial-home .interest-strip { padding: 12px; gap: 12px; margin-top: 14px; }
+  .editorial-home .interest-intro { text-align: left; }
+  .editorial-home .interest-intro .eyebrow { display: none; }
+  .editorial-home .interest-intro h1 { font-size: 18px; margin: 0; }
+  .editorial-home .interest-option { min-height: 60px; justify-content: center; padding: 8px 3px; }
+  .editorial-home .interest-option > svg { display: none; }
+  .editorial-home .interest-option strong { font-size: 12px; }
+  .editorial-home .interest-option small { font-size: 11px; }
+  .editorial-home .lead-section { margin-top: 22px; }
+  .editorial-home .lead-section > .section-heading > button { display: none; }
+  .editorial-home .lead-photo { order: 3; }
+  .editorial-home .lead-photo img { max-height: 190px; width: 100%; }
+  .editorial-home .lead-sidebar { order: 2; }
+  .editorial-home .lead-copy { order: 1; }
+  .editorial-home .story-item { display: block; }
+  .editorial-home .story-image-link { display: none; }
+  .policy-comparison { grid-template-columns: 1fr; gap: 12px; }
+  .policy-reading h2 { font-size: 22px; }
+  .policy-comparison > div { padding: 18px; }
+  .bill-page .article-header .policy-deck { font-size: 16px; }
+  .editorial-home .section-heading { flex-wrap: wrap; gap: 8px; }
   .masthead-wrap { min-height: 135px; row-gap: 8px; }
   .wordmark { font-size: clamp(25px, 7vw, 39px); padding-right: 0; }
   .masthead-actions { grid-column: 1 / -1; justify-content: center; margin: 0; }

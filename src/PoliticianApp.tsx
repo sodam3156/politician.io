@@ -48,6 +48,8 @@ import {
 import "./politicians.css";
 import { IntegrationsPanel, RelatedMedia } from "./DataConnections";
 import EditorialHome from "./EditorialHome";
+import PolicyReading, { PolicyReadingHeader } from "./PolicyReading";
+import { getPolicyBrief, policyHeadline } from "./policy-briefs";
 import "./editorial-home.css";
 
 const ENABLE_DEMO = import.meta.env.VITE_ENABLE_DEMO === "true";
@@ -994,16 +996,18 @@ function BillPage({
     <section className="bill-page">
       <nav className="breadcrumb">
         <a href="#/">관심 정책</a>
-        <span>/ 법안 연결</span>
+        <span>/ 변경 내용</span>
       </nav>
       <header className="article-header">
         <Label mode={bill.mode} />
-        <h1>{bill.title}</h1>
+        <PolicyReadingHeader bill={bill} />
         <p>
-          의안 {bill.number} · {bill.date} · {bill.stage}
+          의안 {bill.number} · {bill.date} 제안 · 수집된 절차: {bill.stage}<br />
+          절차 확인 시점: {new Date(data.recordedAt).toLocaleDateString("ko-KR")}
         </p>
         <External url={bill.sourceUrl}>공식 의안 상세</External>
       </header>
+      <PolicyReading bill={bill} />
       <div className="section-heading">
         <h2>누가 발의했나</h2>
         <span>{bill.proposer}</span>
@@ -1107,7 +1111,6 @@ function BillPage({
         </div>
       )}
       {bill.mode === "official" && <RelatedMedia key={bill.id} personName={bill.title.slice(0, 80)} context="bill" />}
-      <Scenario key={bill.id} bill={bill} data={data} />
     </section>
   );
 }
@@ -1423,13 +1426,13 @@ function Search({ data, close }: { data: Dataset; close: () => void }) {
       .includes(query),
   );
   const bills = data.bills.filter((b) =>
-    [b.title, b.number, b.proposer]
+    [b.title, b.number, b.proposer, getPolicyBrief(b)?.headline, getPolicyBrief(b)?.summary, getPolicyBrief(b)?.audience]
       .join(" ")
       .toLocaleLowerCase()
       .includes(query),
   );
   return (
-    <Dialog title="정치인 또는 법안 찾기" close={close}>
+    <Dialog title="정책·정치인 찾기" close={close}>
       <label className="search-field">
         <MagnifyingGlass size={24} />
         <span className="sr-only">정치인·법안 검색어</span>
@@ -1437,7 +1440,7 @@ function Search({ data, close }: { data: Dataset; close: () => void }) {
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="정치인 이름, 정책, 의안번호"
+          placeholder="간병비, 가족 공제, 정치인 이름"
           maxLength={80}
         />
       </label>
@@ -1471,7 +1474,8 @@ function Search({ data, close }: { data: Dataset; close: () => void }) {
           <li key={b.id}>
             <a href={billHref(b.id)} onClick={close}>
               <Label mode={b.mode} />
-              <strong>{b.title}</strong>
+              <strong>{policyHeadline(b)}</strong>
+              <span>{b.title} · 의안 {b.number}</span>
             </a>
           </li>
         ))}
@@ -1571,7 +1575,7 @@ export default function PoliticianApp() {
     document.title = person
       ? `${person.name} · 이거 누가 발의했어?`
       : bill
-        ? `${bill.title} · 이거 누가 발의했어?`
+        ? `${policyHeadline(bill)} · 이거 누가 발의했어?`
         : "이거 누가 발의했어? · 내 생활에서 시작하는 정치";
   }, [person?.name, bill?.title]);
   useEffect(() => {
@@ -1636,8 +1640,8 @@ export default function PoliticianApp() {
         <div className="container">
           <div className="masthead-wrap">
             <div className="masthead-tagline">
-              <span>정책을 읽는 새로운 기준</span>
-              <small>관심 정책에서 정치인의 행보까지</small>
+              <span>무엇이 달라지는지 먼저.</span>
+              <small>누가 제안했는지는 근거로.</small>
             </div>
             <a className="wordmark" href="#/">
               이거 누가 발의했어?<span>내 생활에서 시작하는 정치</span>

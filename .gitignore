@@ -19,6 +19,9 @@
 !/src/PoliticianApp.tsx
 !/src/EditorialHome.tsx
 !/src/EditorialHome.test.ts
+!/src/policy-briefs.ts
+!/src/PolicyReading.tsx
+!/src/policy-briefs.test.ts
 !/src/editorial-home.css
 !/src/politics.ts
 !/src/politics-reviewed.ts
