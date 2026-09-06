@@ -12,9 +12,6 @@ import {
   ArrowsClockwise,
   DownloadSimple,
   Info,
-  HouseLine,
-  Calculator,
-  HandHeart,
 } from "@phosphor-icons/react";
 import {
   billHref,
@@ -50,6 +47,8 @@ import {
 } from "./politics-reviewed";
 import "./politicians.css";
 import { IntegrationsPanel, RelatedMedia } from "./DataConnections";
+import EditorialHome from "./EditorialHome";
+import "./editorial-home.css";
 
 const ENABLE_DEMO = import.meta.env.VITE_ENABLE_DEMO === "true";
 type Tab = "records" | "context" | "analysis" | "scenario";
@@ -255,280 +254,6 @@ function PersonCard({
       </p>
       <FollowButton person={person} state={state} toggle={toggle} />
     </article>
-  );
-}
-function Home({
-  data,
-  mode,
-  setMode,
-  state,
-  toggle,
-  search,
-  selected,
-}: {
-  data: Dataset;
-  mode: Mode;
-  setMode: (v: Mode) => void;
-  state: FollowState;
-  toggle: (p: Person) => void;
-  search: () => void;
-  selected?: string;
-}) {
-  const people = data.people.filter(
-    (p) =>
-      p.mode === mode && (!selected || p.categories.includes(selected as any)),
-  );
-  const lead =
-    people.find((p) => p.categories.includes((selected ?? "housing") as any)) ??
-    people[0];
-  const [visibleCount, setVisibleCount] = useState(12);
-  useEffect(() => setVisibleCount(12), [selected, mode]);
-  return (
-    <>
-      <section className="interest-strip">
-        <div className="interest-intro">
-          <span className="eyebrow">정책은 입구, 중심은 정치인</span>
-          <h1>누가, 어떻게 움직였을까?</h1>
-        </div>
-        <div className="interest-options">
-          {categories.slice(0, 3).map((c, i) => (
-            <a
-              className={`interest-option ${selected === c.id ? "selected" : ""}`}
-              href={`#/category/${c.id}?mode=${mode}`}
-              key={c.id}
-            >
-              {i === 0 ? (
-                <HouseLine size={25} />
-              ) : i === 1 ? (
-                <Calculator size={25} />
-              ) : (
-                <HandHeart size={25} />
-              )}
-              <span>
-                <strong>{c.label}</strong>
-                <small>{c.description}</small>
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
-      <div className="edition-row">
-        <div className="mode-switch" role="group" aria-label="자료 선택">
-          <button
-            aria-pressed={mode === "official"}
-            onClick={() => setMode("official")}
-          >
-            실제 국회 기록
-          </button>
-          {ENABLE_DEMO && (
-            <button
-              aria-pressed={mode === "demo"}
-              onClick={() => setMode("demo")}
-            >
-              전체 분석 흐름 시연
-            </button>
-          )}
-        </div>
-        <span>
-          {mode === "official"
-            ? data.collectionMode === "authenticated"
-              ? "선택한 의안의 인증 수집 기록"
-              : "선택한 공식 기록 · 전체 분석 아님"
-            : "인물·정책·기사 모두 가상"}
-        </span>
-      </div>
-      {mode === "official" && !selected && (
-        <aside className="reviewed-entry">
-          <span className="eyebrow">원문을 대조한 실제 분석</span>
-          <h2>박선원·이성권은 함께 발의했고, 윤종오는 반대했다.</h2>
-          <p>
-            국정원법 한 안건에서 드러난 협력과 견제. 발언·표결에 더해 수정
-            조문의 조건까지 확인합니다.
-          </p>
-          <a className="text-link" href={personHref("VZA76236", "analysis")}>
-            실제 분석 읽기 <ArrowRight size={18} />
-          </a>
-        </aside>
-      )}
-      <section className="lead-section">
-        <div className="section-heading">
-          <h2>
-            {selected
-              ? `${categoryLabel(selected)}에서 움직인 정치인`
-              : "말에서 행동으로, 한 사람을 이해하는 일"}
-          </h2>
-          <button className="text-link" onClick={search}>
-            정치인·법안 검색
-            <MagnifyingGlass size={18} />
-          </button>
-        </div>
-        {lead ? (
-          <div className="lead-grid actor-lead-grid">
-            <article className="lead-copy">
-              <Label mode={lead.mode} />
-              <h3>
-                <a href={personHref(lead.id)}>
-                  {lead.name},<br />
-                  무엇을 말하고
-                  <br />
-                  어떻게 행동했나.
-                </a>
-              </h3>
-              <p>
-                {mode === "official"
-                  ? "기사의 인상 대신 공식 기록에서 출발합니다. 누가 법안을 내고, 누가 같은 안건에 찬성했는지 확인하세요."
-                  : "보호를 넓히겠다는 발언과 지원 대상을 한정한 법안. 입장이 바뀐 걸까요, 서로 다른 조건을 말한 걸까요?"}
-              </p>
-              <a className="button primary" href={personHref(lead.id)}>
-                정치인 분석 열기
-                <ArrowRight size={19} />
-              </a>
-              <span className="lead-footnote">
-                순위나 진정성 점수 대신 연결된 근거
-              </span>
-            </article>
-            <div className="lead-dossier">
-              <span className="dossier-heading">정치인 기록부</span>
-              <div className="dossier-person">
-                <span className="name-seal" aria-hidden="true">
-                  {lead.name.slice(-2)}
-                </span>
-                <div>
-                  <strong>{lead.name}</strong>
-                  <p>
-                    {identityHistory(lead.party)}
-                    <br />
-                    {identityHistory(lead.region)}
-                  </p>
-                  <small className="small-note">
-                    정당·선거구 조회 이력 포함
-                  </small>
-                </div>
-              </div>
-              <div className="dossier-rule" />
-              <p className="dossier-question">
-                이 사람을 이해하는
-                <br />첫 번째 연결 고리
-              </p>
-              <h4>{data.records.find((r) => r.personId === lead.id)?.title}</h4>
-              <dl>
-                <div>
-                  <dt>행동 근거</dt>
-                  <dd>
-                    {data.records.filter((r) => r.personId === lead.id).length}
-                    개 연결
-                  </dd>
-                </div>
-                <div>
-                  <dt>확인 범위</dt>
-                  <dd>
-                    {mode === "official"
-                      ? "선택한 의안의 공식 기록"
-                      : "가상 발언·발의·표결"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>분석 태도</dt>
-                  <dd>사실과 해석을 따로</dd>
-                </div>
-              </dl>
-              <a className="text-link" href={personHref(lead.id, "analysis")}>
-                행동에서 읽히는 우선순위
-                <ArrowRight size={18} />
-              </a>
-            </div>
-            <aside className="lead-sidebar">
-              <h3>
-                많은 기사보다,
-                <br />
-                하나의 맥락.
-              </h3>
-              <div className="context-mini">
-                <span>발언</span>
-                <span>발의</span>
-                <span>표결</span>
-              </div>
-              <p>
-                같은 보도는 묶고,
-                <br />새 사실과 반박은 남깁니다.
-              </p>
-              <p>
-                왜 그렇게 해석했는지,
-                <br />
-                무엇이 나오면 판단을 바꿀지
-                <br />
-                함께 보여줍니다.
-              </p>
-              <a className="text-link" href={personHref(lead.id, "context")}>
-                정보 거름망 살펴보기
-                <ArrowRight size={18} />
-              </a>
-            </aside>
-          </div>
-        ) : (
-          <div className="empty-state">
-            <h3>
-              이 분야의 {mode === "official" ? "확인된 실제" : "가상"} 인물
-              기록이 아직 없습니다.
-            </h3>
-            <p>
-              자료가 없다는 뜻이지, 해당 분야에서 활동한 정치인이 없다는 뜻은
-              아닙니다.
-            </p>
-            <a className="button secondary" href={`#/?mode=${mode}`}>
-              전체 정치인 보기
-            </a>
-            {ENABLE_DEMO && (
-              <button
-                className="button secondary"
-                onClick={() => setMode("demo")}
-              >
-                가상 분석 흐름 보기
-              </button>
-            )}
-          </div>
-        )}
-      </section>
-      <section className="people-section">
-        <div className="section-heading">
-          <h2>한 사람의 행보를 이어서 보기</h2>
-          <span className="section-note">
-            인기순이 아닌, 확인한 자료의 순서
-          </span>
-        </div>
-        <div className="people-grid">
-          {people.slice(0, visibleCount).map((p) => (
-            <PersonCard
-              key={p.id}
-              person={p}
-              data={data}
-              state={state}
-              toggle={toggle}
-            />
-          ))}
-        </div>
-        {visibleCount < people.length && (
-          <button
-            className="button secondary"
-            onClick={() => setVisibleCount((n) => n + 12)}
-          >
-            정치인 더 보기 · {Math.min(visibleCount, people.length)} /{" "}
-            {people.length}명
-          </button>
-        )}
-      </section>
-      <div className="editorial-bottom">
-        <h2>
-          누가 말했는지에서,
-          <br />왜 그렇게 움직였는지까지.
-        </h2>
-        <p>
-          알려진 사실은 분명하게. 가능한 해석은 조심스럽게.
-          <br />
-          내가 선택한 정치인의 변화를 놓치지 않도록.
-        </p>
-      </div>
-    </>
   );
 }
 function Records({
@@ -1162,7 +887,7 @@ function Profile({
   return (
     <>
       <nav className="breadcrumb" aria-label="현재 위치">
-        <a href="#/">정치인 탐색</a>
+        <a href="#/">관심 정책</a>
         <span>/</span>
         <span>{person.name}</span>
       </nav>
@@ -1268,7 +993,7 @@ function BillPage({
   return (
     <section className="bill-page">
       <nav className="breadcrumb">
-        <a href="#/">정치인 탐색</a>
+        <a href="#/">관심 정책</a>
         <span>/ 법안 연결</span>
       </nav>
       <header className="article-header">
@@ -1381,6 +1106,7 @@ function BillPage({
           </p>
         </div>
       )}
+      {bill.mode === "official" && <RelatedMedia key={bill.id} personName={bill.title.slice(0, 80)} context="bill" />}
       <Scenario key={bill.id} bill={bill} data={data} />
     </section>
   );
@@ -1550,6 +1276,7 @@ function DataPage({
       <header className="following-heading">
         <h1>자료의 범위와 연결 상태</h1>
         <p>무엇을 확인했는지 만큼, 무엇을 아직 모르는지도 공개합니다.</p>
+        <a className="text-link" href="#/">관심 정책 홈으로 돌아가기 <ArrowRight size={18} /></a>
       </header>
       <IntegrationsPanel onAssemblyRefresh={reload} />
       <div className="data-status-grid">
@@ -1842,10 +1569,10 @@ export default function PoliticianApp() {
   const bill = data.bills.find((b) => b.id === route.id);
   useEffect(() => {
     document.title = person
-      ? `${person.name} · 정치인 분석 · 판단`
+      ? `${person.name} · 이거 누가 발의했어?`
       : bill
-        ? `${bill.title} · 판단`
-        : "정치인의 말과 행동을 잇다 · 판단";
+        ? `${bill.title} · 이거 누가 발의했어?`
+        : "이거 누가 발의했어? · 내 생활에서 시작하는 정치";
   }, [person?.name, bill?.title]);
   useEffect(() => {
     if (toast) {
@@ -1880,12 +1607,6 @@ export default function PoliticianApp() {
     }
     persist({ version: 1, people });
   };
-  const setMode = (mode: Mode) => {
-    location.hash =
-      route.page === "category"
-        ? `#/category/${route.id}?mode=${mode}`
-        : `#/?mode=${mode}`;
-  };
   const headlines = [...(ENABLE_DEMO ? demoHeadlines : []), ...imported];
   const mode = ENABLE_DEMO
     ? (person?.mode ?? bill?.mode ?? route.mode)
@@ -1911,15 +1632,15 @@ export default function PoliticianApp() {
           : "현재 인물·정책·기사·분석은 모두 가상 시연입니다."}
         <a href="#/data">자료 안내</a>
       </div>
-      <header className="site-header">
+      <header className={`site-header ${["home", "category"].includes(route.page) ? "" : "compact-header"}`}>
         <div className="container">
           <div className="masthead-wrap">
             <div className="masthead-tagline">
-              <span>정치인의 말과 행동을 잇다</span>
-              <small>사실에서 맥락으로, 맥락에서 판단으로</small>
+              <span>정책을 읽는 새로운 기준</span>
+              <small>관심 정책에서 정치인의 행보까지</small>
             </div>
             <a className="wordmark" href="#/">
-              판단<span>정치인을 이해하는 새로운 읽기</span>
+              이거 누가 발의했어?<span>내 생활에서 시작하는 정치</span>
             </a>
             <div className="masthead-actions">
               <button
@@ -1942,12 +1663,12 @@ export default function PoliticianApp() {
               <a
                 href="#/"
                 aria-current={
-                  ["home", "category"].includes(route.page) ? "page" : undefined
+                  route.page === "home" ? "page" : undefined
                 }
               >
-                정치인 탐색
+                전체
               </a>
-              <a href={personHref("VZA76236", "analysis")}>실제 분석</a>
+              {categories.slice(0, 3).map(c => <a key={c.id} href={`#/category/${c.id}`} aria-current={route.page === "category" && route.id === c.id ? "page" : undefined}>{c.label}</a>)}
               <a
                 href="#/following"
                 aria-current={route.page === "following" ? "page" : undefined}
@@ -1956,7 +1677,7 @@ export default function PoliticianApp() {
               </a>
             </div>
             <a className="editorial-policy" href="#/data">
-              근거와 편집 원칙
+              출처·연결 관리
               <Info size={16} />
             </a>
           </nav>
@@ -1982,12 +1703,9 @@ export default function PoliticianApp() {
           </div>
         )}
         {["home", "category"].includes(route.page) ? (
-          <Home
+          <EditorialHome
             data={data}
             mode={mode}
-            setMode={setMode}
-            state={state}
-            toggle={toggle}
             search={() => setModal("search")}
             selected={route.page === "category" ? route.id : undefined}
           />
@@ -2034,14 +1752,14 @@ export default function PoliticianApp() {
                   : "주소가 잘못되었거나 현재 자료 범위에 없는 인물·법안입니다."}
               </p>
               <a className="button primary" href="#/">
-                정치인 탐색으로 돌아가기
+                관심 정책 홈으로 돌아가기
               </a>
             </div>
           )
         )}
       </main>
       <footer className="site-footer container">
-        <a href="#/">판단</a>
+        <a href="#/">이거 누가 발의했어?</a>
         <p>정치인의 행보를 지속 추적하고, 스스로 판단할 근거를 제공합니다.</p>
         <span>
           사실 · 분석 가설 · 조건부 전망 구분 / 정치 성향 설문·인기 순위 없음
@@ -2053,7 +1771,7 @@ export default function PoliticianApp() {
       <nav className="mobile-nav" aria-label="빠른 메뉴">
         <a href="#/">
           <Users size={22} />
-          정치인
+          정책 홈
         </a>
         <button onClick={() => setModal("search")}>
           <MagnifyingGlass size={22} />

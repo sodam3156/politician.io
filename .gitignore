@@ -17,6 +17,9 @@
 /src/*
 !/src/main.tsx
 !/src/PoliticianApp.tsx
+!/src/EditorialHome.tsx
+!/src/EditorialHome.test.ts
+!/src/editorial-home.css
 !/src/politics.ts
 !/src/politics-reviewed.ts
 !/src/politics-demo.ts
@@ -43,6 +46,16 @@
 !/scripts/read-vault.ps1
 !/scripts/vault.mjs
 !/API_SETUP.md
+!/public/
+/public/*
+!/public/images/
+/public/images/*
+!/public/images/housing.webp
+!/public/images/housing-small.webp
+!/public/images/tax.webp
+!/public/images/tax-small.webp
+!/public/images/care.webp
+!/public/images/care-small.webp
 !/.github/
 /.github/*
 !/.github/workflows/

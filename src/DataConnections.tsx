@@ -245,7 +245,7 @@ function SearchText({ value }: { value: string }) {
     </>
   );
 }
-export function RelatedMedia({ personName }: { personName: string }) {
+export function RelatedMedia({ personName, context = "person" }: { personName: string; context?: "person" | "bill" }) {
   const [provider, setProvider] = useState<"youtube" | "naver">("youtube");
   const [query, setQuery] = useState(personName);
   const [result, setResult] = useState<MediaResult>();
@@ -293,8 +293,7 @@ export function RelatedMedia({ personName }: { personName: string }) {
       </span>
       <h2 id="media-heading">뉴스와 영상에서 직접 확인하세요.</h2>
       <p>
-        이름이 같아도 같은 정치인이나 같은 사건이라는 뜻은 아닙니다. 검색 결과를
-        발언 전문으로 대신하지 않습니다.
+        {context === "bill" ? "같은 법률명이라도 다른 개정안이나 시점의 보도일 수 있습니다. 의안번호와 날짜를 원문에서 확인하세요." : "이름이 같아도 같은 정치인이나 같은 사건이라는 뜻은 아닙니다. 검색 결과를 발언 전문으로 대신하지 않습니다."}
       </p>
       <div className="mode-switch" role="group" aria-label="원문 검색 제공처">
         <button

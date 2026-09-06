@@ -29,6 +29,14 @@ const contentRules = [
 ];
 const problems = [];
 for (const name of names) {
+  // Only these six project-generated, illustrative images are public assets.
+  // No collected records, source photos, or other public/ paths are allowed.
+  if (/^public\/images\/(housing|tax|care)(-small)?\.webp$/.test(name)) {
+    const buffers = [execFileSync(git, ["show", ":" + name]), await readFile(name)];
+    if (buffers.some(b => b.length > 1024 * 1024 || b.toString("ascii", 0, 4) !== "RIFF" || b.toString("ascii", 8, 12) !== "WEBP"))
+      problems.push({ file: name, rule: "invalid illustrative image" });
+    continue;
+  }
   for (const [rule, pattern] of rules)
     if (pattern.test(name)) problems.push({ file: name, rule });
   const staged = run(["show", ":" + name]);

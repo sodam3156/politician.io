@@ -6,6 +6,7 @@ const content = (
   await Promise.all(
     [
       "src/PoliticianApp.tsx",
+      "src/EditorialHome.tsx",
       "src/DataConnections.tsx",
       "src/integrations.ts",
       "src/politics.ts",
