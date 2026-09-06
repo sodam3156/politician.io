@@ -11,7 +11,7 @@ const respond = (json, status = 200) =>
     headers: { "Content-Type": "application/json" },
   });
 const video = {
-  id: { videoId: "abcdefghijk" },
+  id: { kind: "youtube#video", videoId: "abcdefghijk" },
   snippet: {
     title: "Test video",
     channelTitle: "Test channel",
@@ -30,6 +30,22 @@ const item = {
   pubDate: "Sat, 05 Sep 2026 10:00:00 +0900",
 };
 describe("provider contracts: synthetic responses, no external keys", () => {
+  it("ignores explicit channel and playlist resources without dropping valid videos", async () => {
+    const result = await searchProvider("youtube", { query: "test" }, secrets, {
+      fetchImpl: async () => respond({ items: [
+        video,
+        { id: { kind: "youtube#channel", channelId: video.snippet.channelId } },
+        { id: { kind: "youtube#playlist", playlistId: "TEST_PLAYLIST" } },
+      ], nextPageToken: "NEXT" }),
+    });
+    expect(result.videos).toHaveLength(1);
+    expect(result.nextPage).toBe("NEXT");
+    for (const id of [{ videoId: "abcdefghijk" }, { kind: "unknown", videoId: "abcdefghijk" }, { kind: "youtube#video", videoId: "bad" }]) {
+      await expect(searchProvider("youtube", { query: "test" }, secrets, {
+        fetchImpl: async () => respond({ items: [{ ...video, id }] }),
+      })).rejects.toThrow("INVALID_RESPONSE");
+    }
+  });
   it("distinguishes YouTube quota failures from key failures even when HTTP status is 403", async () => {
     await expect(
       searchProvider("youtube", { query: "test" }, secrets, {

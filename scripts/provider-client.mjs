@@ -129,7 +129,16 @@ export async function searchProvider(
     const payload = await jsonRequest(url, {}, fetchImpl);
     if (!Array.isArray(payload.items) || payload.items.length > 10)
       throw new ProviderError("INVALID_RESPONSE");
-    const videos = payload.items.map((item) => {
+    // Search can include non-video resources even with type=video. Do not
+    // interpret channel/playlist thumbnails or identifiers as video evidence.
+    const videoItems = payload.items.filter((item) => {
+      const kind = item?.id?.kind;
+      if (["youtube#channel", "youtube#playlist"].includes(kind)) return false;
+      if (kind !== "youtube#video")
+        throw new ProviderError("INVALID_RESPONSE");
+      return true;
+    });
+    const videos = videoItems.map((item) => {
       const id = string(item.id?.videoId, 11),
         s = item.snippet;
       if (
